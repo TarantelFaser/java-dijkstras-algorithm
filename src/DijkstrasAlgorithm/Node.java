@@ -9,7 +9,6 @@ public class Node {
     //counts total nodes in graph
     private static Integer biggestFreeID = 0;
 
-
     /*
     CONSTRUCTOR
      */

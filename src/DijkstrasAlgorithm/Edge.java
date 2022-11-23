@@ -1,5 +1,7 @@
 package DijkstrasAlgorithm;
 
+import java.util.Objects;
+
 public class Edge {
 
     private Node from;
@@ -7,7 +9,6 @@ public class Edge {
     private Integer weight;
 
     private static Integer NodeCount = 0;
-
 
     public Edge(Node from ,Node to, Integer weight) {
         this.from = from;
@@ -37,7 +38,7 @@ public class Edge {
         return this.to;
     }
 
-    public boolean edgeIsFromTo(Integer from, Integer to) {
-        return (this.from.getID() == from && this.to.getID() == to);
+    public boolean edgeIsFromTo(Node from, Node to) {
+        return (Objects.equals(this.from.getID(), from.getID()) && Objects.equals(this.to.getID(), to.getID()));
     }
 }

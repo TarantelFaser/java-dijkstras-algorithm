@@ -29,15 +29,10 @@ public class main {
         Edges.add(new Edge(Nodes.get(4), Nodes.get(0), 2));
 
         Graph g = new Graph(Nodes, Edges);
-
         ArrayList<Node> result = g.getShortestPaths(start);
 
         for (Node n: result) {
             System.out.println(n.getName() + "   " + n.getDistance());
         }
-
-
-        //does work correctly so far
-
     }
 }

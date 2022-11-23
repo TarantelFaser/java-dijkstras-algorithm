@@ -44,13 +44,21 @@ public class Graph {
             }
             this.foundShortestPath.add(new Node(nodeSmallestDist));
             this.Suchfront.remove(nodeSmallestDist);
+
+
+            StringBuilder s = new StringBuilder("\t\t");
+            for (Node n: this.Suchfront) {
+                s.append(n.getName()).append(", ");
+            }
+            s.delete(s.length()-2, s.length());
+            System.out.println(s);
         }
     }
 
     private Integer getShortestEdge(Node from, Node to) {
         Integer currentShortestDist = Integer.MAX_VALUE;
         for (Edge edge: this.Edges) {
-            if (edge.edgeIsFromTo(from.getID(),to.getID()) && edge.getWeight() < currentShortestDist) {
+            if (edge.edgeIsFromTo(from,to) && edge.getWeight() < currentShortestDist) {
                 currentShortestDist = edge.getWeight();
             }
         }
@@ -60,7 +68,7 @@ public class Graph {
     public ArrayList<Edge> findEdges(Node start, Node end) {
         ArrayList<Edge> EdgesFromTo = new ArrayList<Edge>();
         for (Edge e: this.Edges) {
-            if (e.edgeIsFromTo(start.getID(), end.getID())) {
+            if (e.edgeIsFromTo(start, end)) {
                 EdgesFromTo.add(e);
             }
         }
