@@ -17,15 +17,27 @@ public class Edge {
         NodeCount += 1;
     }
 
+    /*
+    GETTER
+     */
+
     public Integer getNodeCount() {
         return NodeCount;
     }
 
-    public boolean edgeIsFromTo(Integer from, Integer to) {
-        return (this.from.getID() == from && this.to.getID() == to);
-    }
-
     public Integer getWeight() {
         return this.weight;
+    }
+
+    public Node getFrom() {
+        return this.from;
+    }
+
+    public Node getTo() {
+        return this.to;
+    }
+
+    public boolean edgeIsFromTo(Integer from, Integer to) {
+        return (this.from.getID() == from && this.to.getID() == to);
     }
 }

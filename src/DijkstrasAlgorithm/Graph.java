@@ -14,9 +14,6 @@ public class Graph {
     }
 
     public ArrayList<Node> getShortestPaths(Node start) {
-        for (Node n : Suchfront) {
-            n.setDistance(Integer.MAX_VALUE);
-        }
         this.dijkstrasAlgorithm(start);
         return this.foundShortestPath;
     }
