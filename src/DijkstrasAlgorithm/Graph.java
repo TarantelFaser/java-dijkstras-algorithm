@@ -1,4 +1,5 @@
 package DijkstrasAlgorithm;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -86,7 +87,7 @@ public class Graph {
      * Calculate the shortest path lengths using <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Dijkstra's algorithm</a>.
      * @return ArrayList of Node objects, which contain the length of the shortest paths from the start node in their distance property.
      */
-    public ArrayList<Node> getShortestDistancesDijkstra() {
+    public ArrayList<Node> getShortestPathsDijkstra() {
         this.dijkstrasAlgorithm();
         return this.nWithShortestDistFound;
     }
@@ -95,6 +96,7 @@ public class Graph {
      * Implements dijkstra's algorithm
      */
     private void dijkstrasAlgorithm() {
+        Nodes.get(0).setDistance(0);
         Node start = this.nWithoutShortestDistFound.get(0);
         this.nWithoutShortestDistFound.remove(0);
         start.setDistance(0);
@@ -102,8 +104,8 @@ public class Graph {
 
         //print additional info
         if (printDebugInfo) {
-            printToConsole(nWithShortestDistFound, true, "abgearbeitete Knoten (" + nWithShortestDistFound.size() + "):\t");
-            printToConsole(nWithoutShortestDistFound, true, "Suchfront (" + nWithoutShortestDistFound.size() + "):\t\t\t\t");
+            printDistancesToConsole(nWithShortestDistFound, true, "abgearbeitete Knoten (" + nWithShortestDistFound.size() + "):\t");
+            printDistancesToConsole(nWithoutShortestDistFound, true, "Suchfront (" + nWithoutShortestDistFound.size() + "):\t\t\t\t");
             System.out.println("=".repeat(60));
         }
 
@@ -118,22 +120,28 @@ public class Graph {
                         Integer dist = v.getDistance() + getShortestEdgeLength(v,w); //new distance ist distance of already found node + shortest edge between w and v
                         if (dist < currentShortest) {
                             currentShortest = dist; //only the shortest edge of all possibilities is the right one
-                            v.setPrev(w.copy());
+                            w.setPrev(v.copy()); //save the father node in the shortest path
                         }
                     }
                 }
                 w.setDistance(currentShortest);
+
+                //update information in ArrayList that contains all nodes
+                Nodes.get(w.getID()).setDistance(w.getDistance());
+                Nodes.get(w.getID()).setPrev(w.getPrev());
             }
             //in every iteration of the outer for loop only the node
             //with the smallest path length gets new distance assigned
-            Node nodeSmallestDist = Collections.min(this.nWithoutShortestDistFound, new NodeComp());
+            Node nodeSmallestDist = Collections.min(this.nWithoutShortestDistFound, new NodeCompDistances());
             this.nWithShortestDistFound.add(nodeSmallestDist.copy());
             this.nWithoutShortestDistFound.remove(nodeSmallestDist);
 
             //print additional info
             if (printDebugInfo) {
-                printToConsole(nWithShortestDistFound, true, "abgearbeitete Knoten (" + nWithShortestDistFound.size() + "):\t");
-                printToConsole(nWithoutShortestDistFound, true, "Suchfront (" + nWithoutShortestDistFound.size() + "):\t\t\t\t");
+                printDistancesToConsole(nWithShortestDistFound, true, "abgearbeitete Knoten (" + nWithShortestDistFound.size() + "):\t");
+                printDistancesToConsole(nWithoutShortestDistFound, true, "Suchfront (" + nWithoutShortestDistFound.size() + "):\t\t\t\t");
+                //printDistancesToConsole(Nodes, true, "alle Knoten: \t\t\t\t");
+                printPathsToConsole(Nodes, true);
                 System.out.println("");
             }
         }
@@ -146,8 +154,7 @@ public class Graph {
      * @return length of the shortest edge between two nodes.
      */
     public Integer getShortestEdgeLength(Node from, Node to) {
-        ArrayList<Edge> edgesFromTo = findEdges(from, to);
-        return Collections.min(edgesFromTo, new EdgeComp()).getWeight();
+        return Collections.min(findEdges(from, to), new EdgeComp()).getWeight();
     }
 
     /**
@@ -166,14 +173,19 @@ public class Graph {
         return EdgesFromTo;
     }
 
+    /*
+    OUTPUT / PRINT TO CONSOLE
+     */
+
     /**
      * Prints an ArrayList of nodes in a human-readable kind of way to the console.
      * @param nodeList ArrayList of Nodes to be printed.
      * @param printDistances true: print node names and distance, false: only print node names.
      * @param prefix String prefix for console output, string will be printed at the beginning of the line.
      */
-    public void printToConsole(ArrayList<Node> nodeList, boolean printDistances, String prefix) {
+    public void printDistancesToConsole(ArrayList<Node> nodeList, boolean printDistances, String prefix) {
         StringBuilder s = new StringBuilder(prefix);
+        Collections.sort(nodeList, new NodeCompName()); //sort nodeList by name, for consistency
         //if empty print 'null' instead of nothing
         if (nodeList.isEmpty()) {
             s.append("null");
@@ -183,11 +195,44 @@ public class Graph {
         for (Node n: nodeList) {
             s.append(n.getName());
             if (!n.getDistance().equals(Integer.MAX_VALUE)) {
-                s.append(printDistances ? ":" + n.getDistance() + "\t" : "\t");
+                s.append(printDistances ? ":" + n.getDistance() + "\t\t" : "\t\t");
             } else {
-                s.append(printDistances ? ":inf\t" : "\t");
+                s.append(printDistances ? ":inf\t" : "\t\t");
             }
         }
         System.out.println(s);
+    }
+
+    /**
+     * Print the shortest paths in console.
+     * @param nodeList List of nodes for which the path should be printed
+     * @param printDistances true: print distance + path, false: just print path
+     */
+    public void printPathsToConsole(ArrayList<Node> nodeList, boolean printDistances) {
+        System.out.println("Wege zum Knoten (Distanz): ");
+        String path;
+        for (Node n: nodeList) {
+            path = "\t\t";
+            if (printDistances) {
+                if (n.getDistance().equals(Integer.MAX_VALUE)) {
+                    path += n.getName() + " (inf): " + getPrevRec(n);
+                } else {
+                    path += n.getName() + " (" + n.getDistance() + "): " + getPrevRec(n);
+                }
+            } else {
+                path += n.getName() + ": " + getPrevRec(n);
+            }
+            System.out.println(path);
+        }
+    }
+
+    /**
+     * Follow the prev property of every node to construct the complete path recursively.
+     * @param n end of path
+     * @return string with complete path from start to end (argument Node n)
+     */
+    private String getPrevRec(Node n) {
+        if (n.getPrev() == null) return n.getName();
+        return getPrevRec(n.getPrev()) + " -> " + n.getName();
     }
 }

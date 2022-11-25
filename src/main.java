@@ -3,14 +3,22 @@ import DijkstrasAlgorithm.Graph;
 import DijkstrasAlgorithm.Node;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 
 public class main {
 
     public static void main(String[] args) {
 
+        testGraph();
+
+    }
+
+    /**
+     * example
+     */
+    public static void testGraph() {
         Graph g = new Graph();
 
+        //create a new ArrayList<Node> containing all Nodes
         ArrayList<Node> nodesInGraph = new ArrayList<Node>();
         nodesInGraph.add(new Node("s"));
         nodesInGraph.add(new Node("t"));
@@ -19,6 +27,7 @@ public class main {
         nodesInGraph.add(new Node("w"));
         nodesInGraph.add(new Node("x"));
 
+        //create a new ArrayList<Edge> containing all Edges
         ArrayList<Edge> edgesInGraph = new ArrayList<Edge>();
         edgesInGraph.add(new Edge(nodesInGraph.get(0), nodesInGraph.get(1), 5));
         edgesInGraph.add(new Edge(nodesInGraph.get(0), nodesInGraph.get(2), 1));
@@ -29,20 +38,14 @@ public class main {
         edgesInGraph.add(new Edge(nodesInGraph.get(5), nodesInGraph.get(4), 6));
         edgesInGraph.add(new Edge(nodesInGraph.get(5), nodesInGraph.get(1), 2));
 
+        //set nodes and edges
         g.setNodes(nodesInGraph);
         g.setEdges(edgesInGraph);
+
+        //turn on debug / additional info -> prints current paths / distances found for every iteration
         g.setPrintDebugInfo(true);
 
-        ArrayList<Node> result = g.getShortestDistancesDijkstra();
-
-        g.printToConsole(result, false, "test");
-
-        for (Node n : result) {
-            if (n.getPrev() == null) {
-                System.out.println(n.getName() + ":none");
-            } else {
-                System.out.println(n.getName() + ":" + n.getPrev().getName());
-            }
-        }
+        //use Dijkstra's Algorithm to calculate the shortest Paths
+        ArrayList<Node> result = g.getShortestPathsDijkstra();
     }
 }

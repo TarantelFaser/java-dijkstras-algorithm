@@ -158,9 +158,9 @@ public class Node {
 }
 
 /**
- * Comparator for two Nodes -> Collections.min(col, new NodeComp() ); works!
+ * Comparator for two nodes by distance -> Collections.min(col, new NodeComp() ); works!
  */
-class NodeComp implements Comparator<Node> {
+class NodeCompDistances implements Comparator<Node> {
 
     /**
      * Compare two nodes by distance
@@ -171,5 +171,21 @@ class NodeComp implements Comparator<Node> {
     @Override
     public int compare(Node n1, Node n2) {
         return n1.getDistance().compareTo(n2.getDistance());
+    }
+}
+
+/**
+ * Comparator for two nodes by name (alphabetically)
+ */
+class NodeCompName implements  Comparator<Node> {
+    /**
+     * Compare two nodes by name
+     * @param n1 the first node to be compared.
+     * @param n2 the second node to be compared.
+     * @return 0 if names equal, int < 0 if name1 < name2, int > 0 if name1 > name2 (alphabetically)
+     */
+    @Override
+    public int compare(Node n1, Node n2) {
+        return n1.getName().compareTo(n2.getName());
     }
 }
