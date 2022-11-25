@@ -31,15 +31,18 @@ public class main {
 
         g.setNodes(nodesInGraph);
         g.setEdges(edgesInGraph);
+        g.setPrintDebugInfo(true);
 
         ArrayList<Node> result = g.getShortestDistancesDijkstra();
 
-        for (Node n: nodesInGraph) {
-            System.out.println(n.getName() + ":  id="+ n.getID());
-        }
+        g.printToConsole(result, false, "test");
 
-        for (Node n: result) {
-            System.out.println(n.getName() + "   " + n.getDistance());
+        for (Node n : result) {
+            if (n.getPrev() == null) {
+                System.out.println(n.getName() + ":none");
+            } else {
+                System.out.println(n.getName() + ":" + n.getPrev().getName());
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ public class Node {
     private Integer id;
     private String name;
     private Integer distance;
+    private Node prev;
 
     //counts total nodes
     private static Integer biggestFreeID = 0;
@@ -23,6 +24,7 @@ public class Node {
     public Node(String name) {
         this.name = name;
         this.distance = Integer.MAX_VALUE;
+        this.prev = null;
 
         //automatically assign unique ID (starting from 0)
         this.id = Node.biggestFreeID;
@@ -39,6 +41,7 @@ public class Node {
         this.id = toBeCopied.getID();
         this.name = toBeCopied.getName();
         this.distance = toBeCopied.getDistance();
+        this.prev = toBeCopied.getPrev();
 
         //don't increment biggestFreeID nor totalNodeCount here, since node is just being copied
     }
@@ -71,6 +74,14 @@ public class Node {
         return this.distance;
     }
 
+    /**
+     * Get father / previous node in the path
+     * @return node which is father of this node
+     */
+    public Node getPrev() {
+        return this.prev;
+    }
+
     /*
     SETTER
      */
@@ -97,6 +108,14 @@ public class Node {
      */
     public void setID(Integer id) {
         this.id = id;
+    }
+
+    /**
+     * Sets father / previous node
+     * @param pre previous node
+     */
+    public void setPrev(Node pre) {
+        this.prev = pre;
     }
 
     /*

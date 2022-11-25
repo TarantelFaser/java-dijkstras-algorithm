@@ -11,6 +11,8 @@ public class Graph {
     private ArrayList<Node> Nodes; //all nodes in original graph
     private ArrayList<Edge> Edges; //all edges
 
+    private boolean printDebugInfo;
+
     /*
     CONSTRUCTOR
      */
@@ -22,6 +24,7 @@ public class Graph {
         this.nWithShortestDistFound = new ArrayList<Node>();
         this.nWithoutShortestDistFound = new ArrayList<Node>();
         this.Edges = new ArrayList<Edge>();
+        this.printDebugInfo = false;
     }
 
     /*
@@ -45,6 +48,14 @@ public class Graph {
      */
     public void setEdges(ArrayList<Edge> edgesInGraph) {
         this.Edges = edgesInGraph;
+    }
+
+    /**
+     * Enables / Disables additional infos being printed to console
+     * @param printInfo true: print info, false: don't print info
+     */
+    public void setPrintDebugInfo(boolean printInfo) {
+        this.printDebugInfo = printInfo;
     }
 
     /*
@@ -88,6 +99,14 @@ public class Graph {
         this.nWithoutShortestDistFound.remove(0);
         start.setDistance(0);
         this.nWithShortestDistFound.add(start);
+
+        //print additional info
+        if (printDebugInfo) {
+            printToConsole(nWithShortestDistFound, true, "abgearbeitete Knoten (" + nWithShortestDistFound.size() + "):\t");
+            printToConsole(nWithoutShortestDistFound, true, "Suchfront (" + nWithoutShortestDistFound.size() + "):\t\t\t\t");
+            System.out.println("=".repeat(60));
+        }
+
         //searching for n-1 (node count - 1) shortest path lengths (one to every node)
         for (int i = 1; i < Node.getNodeCount(); i++) {
             //for every node without the shortest path length found
@@ -97,7 +116,10 @@ public class Graph {
                 for (Node v: this.nWithShortestDistFound) {
                     for (Edge e : findEdges(v,w)) { //often only 1 edge between two nodes
                         Integer dist = v.getDistance() + getShortestEdgeLength(v,w); //new distance ist distance of already found node + shortest edge between w and v
-                        if (currentShortest > dist) currentShortest = dist; //only the shortest edge of all possibilities is the right one
+                        if (dist < currentShortest) {
+                            currentShortest = dist; //only the shortest edge of all possibilities is the right one
+                            v.setPrev(w.copy());
+                        }
                     }
                 }
                 w.setDistance(currentShortest);
@@ -107,6 +129,13 @@ public class Graph {
             Node nodeSmallestDist = Collections.min(this.nWithoutShortestDistFound, new NodeComp());
             this.nWithShortestDistFound.add(nodeSmallestDist.copy());
             this.nWithoutShortestDistFound.remove(nodeSmallestDist);
+
+            //print additional info
+            if (printDebugInfo) {
+                printToConsole(nWithShortestDistFound, true, "abgearbeitete Knoten (" + nWithShortestDistFound.size() + "):\t");
+                printToConsole(nWithoutShortestDistFound, true, "Suchfront (" + nWithoutShortestDistFound.size() + "):\t\t\t\t");
+                System.out.println("");
+            }
         }
     }
 
@@ -139,15 +168,26 @@ public class Graph {
 
     /**
      * Prints an ArrayList of nodes in a human-readable kind of way to the console.
-     * @param nodeList ArrayList of Nodes to be printed
+     * @param nodeList ArrayList of Nodes to be printed.
+     * @param printDistances true: print node names and distance, false: only print node names.
+     * @param prefix String prefix for console output, string will be printed at the beginning of the line.
      */
-    public void printToConsole(ArrayList<Node> nodeList) {
-        StringBuilder s = new StringBuilder("\t");
+    public void printToConsole(ArrayList<Node> nodeList, boolean printDistances, String prefix) {
+        StringBuilder s = new StringBuilder(prefix);
+        //if empty print 'null' instead of nothing
+        if (nodeList.isEmpty()) {
+            s.append("null");
+            System.out.println(s);
+            return;
+        }
         for (Node n: nodeList) {
             s.append(n.getName());
-            s.append(", ");
+            if (!n.getDistance().equals(Integer.MAX_VALUE)) {
+                s.append(printDistances ? ":" + n.getDistance() + "\t" : "\t");
+            } else {
+                s.append(printDistances ? ":inf\t" : "\t");
+            }
         }
-        s.delete(s.length()-2, s.length());
         System.out.println(s);
     }
 }
