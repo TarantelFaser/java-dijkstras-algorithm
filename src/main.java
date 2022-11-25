@@ -46,6 +46,7 @@ public class main {
         g.setPrintDebugInfo(true);
 
         //use Dijkstra's Algorithm to calculate the shortest Paths
+        //the algorithm uses the first node in nodesInGraph ArrayList<Node> as the starting point
         ArrayList<Node> result = g.getShortestPathsDijkstra();
     }
 }
