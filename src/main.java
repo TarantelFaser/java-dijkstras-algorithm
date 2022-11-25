@@ -9,27 +9,34 @@ public class main {
 
     public static void main(String[] args) {
 
-        Node start = new Node("s",0);
+        Graph g = new Graph();
 
-        LinkedList<Node> Nodes = new LinkedList<Node>();
-        Nodes.add(new Node("t",1));
-        Nodes.add(new Node("u",2));
-        Nodes.add(new Node("v",3));
-        Nodes.add(new Node("w",4));
-        Nodes.add(new Node("x",5));
+        ArrayList<Node> nodesInGraph = new ArrayList<Node>();
+        nodesInGraph.add(new Node("s"));
+        nodesInGraph.add(new Node("t"));
+        nodesInGraph.add(new Node("u"));
+        nodesInGraph.add(new Node("v"));
+        nodesInGraph.add(new Node("w"));
+        nodesInGraph.add(new Node("x"));
 
-        ArrayList<Edge> Edges = new ArrayList<Edge>();
-        Edges.add(new Edge(start, Nodes.get(0), 5));
-        Edges.add(new Edge(start, Nodes.get(1), 1));
-        Edges.add(new Edge(start, Nodes.get(2), 7));
-        Edges.add(new Edge(Nodes.get(1), Nodes.get(4), 1));
-        Edges.add(new Edge(Nodes.get(0), Nodes.get(3), 3));
-        Edges.add(new Edge(Nodes.get(2), Nodes.get(3), 1));
-        Edges.add(new Edge(Nodes.get(4), Nodes.get(3), 6));
-        Edges.add(new Edge(Nodes.get(4), Nodes.get(0), 2));
+        ArrayList<Edge> edgesInGraph = new ArrayList<Edge>();
+        edgesInGraph.add(new Edge(nodesInGraph.get(0), nodesInGraph.get(1), 5));
+        edgesInGraph.add(new Edge(nodesInGraph.get(0), nodesInGraph.get(2), 1));
+        edgesInGraph.add(new Edge(nodesInGraph.get(0), nodesInGraph.get(3), 7));
+        edgesInGraph.add(new Edge(nodesInGraph.get(2), nodesInGraph.get(5), 1));
+        edgesInGraph.add(new Edge(nodesInGraph.get(1), nodesInGraph.get(4), 3));
+        edgesInGraph.add(new Edge(nodesInGraph.get(3), nodesInGraph.get(4), 1));
+        edgesInGraph.add(new Edge(nodesInGraph.get(5), nodesInGraph.get(4), 6));
+        edgesInGraph.add(new Edge(nodesInGraph.get(5), nodesInGraph.get(1), 2));
 
-        Graph g = new Graph(Nodes, Edges);
-        ArrayList<Node> result = g.getShortestPaths(start);
+        g.setNodes(nodesInGraph);
+        g.setEdges(edgesInGraph);
+
+        ArrayList<Node> result = g.getShortestDistancesDijkstra();
+
+        for (Node n: nodesInGraph) {
+            System.out.println(n.getName() + ":  id="+ n.getID());
+        }
 
         for (Node n: result) {
             System.out.println(n.getName() + "   " + n.getDistance());
